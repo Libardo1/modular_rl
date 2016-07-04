@@ -1,3 +1,4 @@
+import sys
 import numpy as np, time, itertools
 from collections import OrderedDict
 from .misc_utils import *
@@ -140,7 +141,7 @@ def do_rollouts_serial(env, agent, timestep_limit, n_timesteps, seed_iter):
     paths = []
     timesteps_sofar = 0
     while True:
-        np.random.seed(seed_iter.next())
+        np.random.seed(seed_iter.next() if sys.version_info < (3,0) else next(seed_iter))
         path = rollout(env, agent, timestep_limit)
         paths.append(path)
         timesteps_sofar += pathlength(path)
@@ -499,8 +500,8 @@ class LbfgsOptimizer(EzFlat):
         self.all_losses["loss"] = loss        
         if extra_losses is not None:
             self.all_losses.update(extra_losses)
-        self.f_lossgrad = theano.function(list(symb_args), [loss, flatgrad(loss, params)],**FNOPTS)
-        self.f_losses = theano.function(symb_args, self.all_losses.values(),**FNOPTS)
+        self.f_lossgrad = theano.function(list(symb_args), [loss, flatgrad(loss, params)], **FNOPTS)
+        self.f_losses = theano.function(list(symb_args), list(self.all_losses.values()), **FNOPTS)
         self.maxiter=maxiter
 
     def update(self, *args):

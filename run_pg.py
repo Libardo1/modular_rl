@@ -6,7 +6,11 @@ This script runs a policy gradient algorithm
 
 from gym.envs import make
 from modular_rl import *
-import argparse, sys, cPickle
+import argparse, sys
+if sys.version_info >= (3, 0):
+    import pickle as cPickle
+else:
+    import pickle
 from tabulate import tabulate
 import shutil, os, logging
 import gym
@@ -41,8 +45,8 @@ if __name__ == "__main__":
         global COUNTER
         COUNTER += 1  
         # Print stats
-        print "*********** Iteration %i ****************" % COUNTER
-        print tabulate(filter(lambda (k,v) : np.asarray(v).size==1, stats.items())) #pylint: disable=W0110
+        print("*********** Iteration %i ****************" % COUNTER)
+        print(tabulate({ (k, v) for (k, v) in viewitems(stats) if np.asarray(v).size== 1 })) #pylint: disable=W0110
         # Store to hdf5
         if args.use_hdf:
             for (stat,val) in stats.items():
@@ -62,6 +66,6 @@ if __name__ == "__main__":
     if args.use_hdf:
         hdf['env_id'] = env_spec.id
         try: hdf['env'] = np.array(cPickle.dumps(env, -1))
-        except Exception: print "failed to pickle env" #pylint: disable=W0703
+        except Exception: print("failed to pickle env") #pylint: disable=W0703
     
     env.monitor.close()

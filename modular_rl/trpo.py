@@ -1,4 +1,4 @@
-from modular_rl import *
+from . import *
 
 # ================================================================
 # Trust Region Policy Optimization
@@ -133,7 +133,7 @@ def cg(f_Ax, b, cg_iters=10, callback=None, verbose=False, residual_tol=1e-10):
     titlestr =  "%10s %10s %10s"
     if verbose: print(titlestr % ("iter", "residual norm", "soln norm"))
 
-    for i in xrange(cg_iters):
+    for i in range(cg_iters):
         if callback is not None:
             callback(x)
         if verbose: print(fmtstr % (i, rdotr, np.linalg.norm(x)))

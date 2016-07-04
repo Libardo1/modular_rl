@@ -1,4 +1,4 @@
-from modular_rl import *
+from . import *
 
 class PpoLbfgsUpdater(EzFlat, EzPickle):
 
