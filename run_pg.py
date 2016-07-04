@@ -46,7 +46,7 @@ if __name__ == "__main__":
         COUNTER += 1  
         # Print stats
         print("*********** Iteration %i ****************" % COUNTER)
-        print(tabulate({ (k, v) for (k, v) in viewitems(stats) if np.asarray(v).size== 1 })) #pylint: disable=W0110
+        print(tabulate([ (k, v) for k, v in viewitems(stats) if np.asarray(v).size== 1 ])) #pylint: disable=W0110
         # Store to hdf5
         if args.use_hdf:
             for (stat,val) in stats.items():

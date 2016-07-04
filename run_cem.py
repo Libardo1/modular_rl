@@ -50,7 +50,7 @@ if __name__ == "__main__":
         if args.plot:
             animate_rollout(env, agent, min(500, args.timestep_limit))
         print("*********** Iteration %i ****************" % COUNTER)
-        print(tabulate({ (k, v) for (k, v) in viewitems(stats) if np.asarray(v).size== 1 })) #pylint: disable=W0110
+        print(tabulate([ (k, v) for k, v in viewitems(stats) if np.asarray(v).size== 1 ])) #pylint: disable=W0110
         COUNTER += 1
         if args.snapshot_every and ((COUNTER % args.snapshot_every==0) or (COUNTER==args.n_iter)): 
             hdf['/agent_snapshots/%0.4i'%COUNTER] = np.array(cPickle.dumps(agent,-1))
