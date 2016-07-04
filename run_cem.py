@@ -5,10 +5,15 @@ This script runs the cross-entropy method
 
 from gym.envs import make
 from modular_rl import *
-import argparse, sys, cPickle, shutil
+if sys.version_info >= (3,0):
+    import pickle as cPickle
+else:
+    import cPickle
+import argparse, sys, shutil
 import gym, logging
 
 from tabulate import tabulate
+from future.utils import viewitems
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -40,12 +45,14 @@ if __name__ == "__main__":
     COUNTER = 0
     def callback(stats):
         global COUNTER
-        for (stat,val) in stats.items():
+        for (stat,val) in viewitems(stats):
             diagnostics[stat].append(val)
         if args.plot:
             animate_rollout(env, agent, min(500, args.timestep_limit))
-        print "*********** Iteration %i ****************" % COUNTER
-        print tabulate(filter(lambda (k,v) : np.asarray(v).size==1, stats.items())) #pylint: disable=W0110
+        print("*********** Iteration %i ****************" % COUNTER)
+        l = { (k, v) for (k, v) in viewitems(stats) if np.asarray(v).size== 1 }
+        print('==l before tabulate:', l)
+        print(tabulate(l)) #pylint: disable=W0110
         COUNTER += 1
         if args.snapshot_every and ((COUNTER % args.snapshot_every==0) or (COUNTER==args.n_iter)): 
             hdf['/agent_snapshots/%0.4i'%COUNTER] = np.array(cPickle.dumps(agent,-1))
@@ -53,5 +60,5 @@ if __name__ == "__main__":
 
     hdf['env_id'] = env_spec.id
     try: hdf['env'] = np.array(cPickle.dumps(env, -1))
-    except Exception: print "failed to pickle env" #pylint: disable=W0703
+    except Exception: print("failed to pickle env") #pylint: disable=W0703
     env.monitor.close()
