@@ -1,4 +1,9 @@
-import copy_reg, cPickle
+import sys
+
+if sys.version_info > (3, 0):
+    import copyreg as copy_reg, pickle as cPickle
+else:
+    import copy_reg, cPickle
 import theano, keras, keras.backend
 
 floatX = theano.config.floatX #pylint: disable=E1101
@@ -10,7 +15,7 @@ FNOPTS = dict(allow_input_downcast=True, on_unused_input='ignore')
 from keras.models import Sequential, model_from_json
 
 def kerasmodel_unpickler(s):
-    print "unpickling keras model"
+    print("unpickling keras model")
     modelstr, weightss = cPickle.loads(s)
     from .core import ConcatFixedStd
     model = model_from_json(modelstr, custom_objects={"ConcatFixedStd" : ConcatFixedStd})
@@ -20,7 +25,7 @@ def kerasmodel_unpickler(s):
     return model
         
 def kerasmodel_pickler(model):
-    print "pickling keras model"
+    print("pickling keras model")
     modelstr = model.to_json()
     weightss = []
     for layer in model.layers:

@@ -1,6 +1,7 @@
 from __future__ import print_function
 import atexit, numpy as np, scipy, sys, os.path as osp
 from collections import defaultdict
+from future.utils import viewitems
 
 # ================================================================
 # Math utilities
@@ -68,7 +69,7 @@ def update_default_config(tuples, usercfg):
     for (name,_,defval,_) in tuples:
         out[name] = defval
     if usercfg:
-        for (k,v) in usercfg.iteritems():
+        for (k,v) in viewitems(usercfg):
             if k in out:
                 out[k] = v
     return out
